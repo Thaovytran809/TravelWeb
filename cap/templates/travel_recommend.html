@@ -1,0 +1,817 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gợi ý du lịch thông minh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(45deg, #667eea, #06244c);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .city-selector {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .city-selector h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .services-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .services-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .service-category {
+            margin-bottom: 25px;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .category-header h4 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .dropdown-arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .category-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .category-content.active {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .category-header.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e6ed;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: #667eea;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.3);
+            accent-color: #667eea;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .recommendations-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 800px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e6ed;
+            font-size: 0.9rem;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .price-highlight {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .rating-badge {
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .link-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .link-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 30px 0;
+            border-radius: 1px;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 30px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🎯 Gợi ý du lịch thông minh</h2>
+            <p>Nhận đề xuất cá nhân hóa dựa trên trải nghiệm của bạn</p>
+        </div>
+
+        <div class="content">
+            <!-- City Selection -->
+            <div class="city-selector">
+                <h3>🏙️ Chọn thành phố bạn muốn khám phá</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <select name="city" onchange="this.form.submit()">
+                        <option value="">-- Chọn thành phố --</option>
+                        {% for city in cities %}
+                            <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+
+            {% if selected_city %}
+                <div class="divider"></div>
+                
+                <!-- Services Selection -->
+                <div class="services-section">
+                    <h3 class="services-title">✨ Chọn các dịch vụ bạn đã trải nghiệm</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="city" value="{{ selected_city }}">
+
+                        <!-- Hotels Section -->
+                        <div class="service-category">
+                            <div class="category-header" onclick="toggleCategory('hotels')">
+                                <h4>🏨 Khách sạn ({{ hotels|length }} khách sạn)</h4>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="category-content" id="hotels-content">
+                                {% if hotels %}
+                                    <div class="checkbox-grid">
+                                        {% for hotel in hotels %}
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" name="hotels" value="{{ hotel.hotel_id }}" id="hotel_{{ hotel.hotel_id }}">
+                                                <label for="hotel_{{ hotel.hotel_id }}">{{ hotel.hotel_name }}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="no-data">Không có khách sạn nào.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Tours Section -->
+                        <div class="service-category">
+                            <div class="category-header" onclick="toggleCategory('tours')">
+                                <h4>🎪 Tour du lịch ({{ tours|length }} tour)</h4>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="category-content" id="tours-content">
+                                {% if tours %}
+                                    <div class="checkbox-grid">
+                                        {% for tour in tours %}
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" name="tours" value="{{ tour.tour_id }}" id="tour_{{ tour.tour_id }}">
+                                                <label for="tour_{{ tour.tour_id }}">{{ tour.tour_name }}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="no-data">Không có tour nào.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Airlines Section -->
+                        <div class="service-category">
+                            <div class="category-header" onclick="toggleCategory('airlines')">
+                                <h4>🏢 Chọn hãng hàng không yêu thích</h4>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="category-content" id="airlines-content">
+                                {% if flights %}
+                                    <div class="checkbox-grid">
+                                        {% for airline in flights|dictsort:"Airline" %}
+                                            {% ifchanged airline.Airline %}
+                                                <div class="checkbox-item">
+                                                    <input type="checkbox" name="airlines" value="{{ airline.Airline }}" id="airline_{{ forloop.counter }}">
+                                                    <label for="airline_{{ forloop.counter }}">{{ airline.Airline }}</label>
+                                                </div>
+                                            {% endifchanged %}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="no-data">Không có hãng bay nào.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">🔍 Tìm gợi ý phù hợp</button>
+                    </form>
+                </div>
+
+                {% if recommended_hotels or recommended_tours or recommended_flights %}
+                    <div class="divider"></div>
+                    
+                    <!-- Recommendations Section -->
+                    <div class="recommendations-section">
+                        <h3 class="section-title">💎 Gợi ý dành riêng cho bạn</h3>
+
+                        <!-- Hotel Recommendations -->
+                        {% if recommended_hotels %}
+                            <div class="recommendation-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">🏨 Khách sạn tương tự</h4>
+                                    <span>{{ recommended_hotels|length }} khách sạn</span>
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Tên khách sạn</th>
+                                                <th>Địa điểm</th>
+                                                <th>Giá/đêm</th>
+                                                <th>Đánh giá</th>
+                                                <th>Lượt đánh giá</th>
+                                                <th>Sao</th>
+                                                <th>Check-in</th>
+                                                <th>Check-out</th>
+                                                <th>Từ trung tâm</th>
+                                                <th>Địa điểm phổ biến</th>
+                                                <th>Chi tiết</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for hotel in recommended_hotels %}
+                                            <tr>
+                                                <td><strong>{{ hotel.hotel_name }}</strong></td>
+                                                <td>{{ hotel.location }}</td>
+                                                <td class="price-highlight">{{ hotel.price|floatformat:0 }}đ</td>
+                                                <td><span class="rating-badge">{{ hotel.score_hotels }}</span></td>
+                                                <td>{{ hotel.number_rating }}</td>
+                                                <td>⭐ {{ hotel.start_clean }}</td>
+                                                <td>{{ hotel.received_time }}</td>
+                                                <td>{{ hotel.giveback_time }}</td>
+                                                <td>{{ hotel.from_center }}</td>
+                                                <td>{{ hotel.popular_destination }}</td>
+                                                <td><a href="{{ hotel.hotel_link }}" target="_blank" class="link-button">Xem</a></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Tour Recommendations -->
+                        {% if recommended_tours %}
+                            <div class="recommendation-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">🎪 Tour tương tự</h4>
+                                    <span>{{ recommended_tours|length }} tour</span>
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Tên tour</th>
+                                                <th>Giá tour</th>
+                                                <th>Đánh giá</th>
+                                                <th>Thời lượng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tour in recommended_tours %}
+                                            <tr>
+                                                <td><strong>{{ tour.tour_name }}</strong></td>
+                                                <td class="price-highlight">{{ tour.price|floatformat:0 }}đ</td>
+                                                <td><span class="rating-badge">{{ tour.rating }}</span></td>
+                                                <td>{{ tour.duration }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Flight Recommendations -->
+                        {% if recommended_flights %}
+                            <div class="recommendation-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">✈️ Chuyến bay từ hãng bạn yêu thích</h4>
+                                    <span>{{ recommended_flights|length }} chuyến bay</span>
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Hãng bay</th>
+                                                <th>Giá vé</th>
+                                                <th>Ngày đi</th>
+                                                <th>Giờ đi</th>
+                                                <th>Nơi đi</th>
+                                                <th>Giờ đến</th>
+                                                <th>Điểm đến</th>
+                                                <th>Thời gian bay</th>
+                                                <th>Transit</th>
+                                                <th>Tổng thời gian</th>
+                                                <th>Ngày đến</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for flight in recommended_flights %}
+                                            <tr>
+                                                <td><strong>{{ flight.Airline }}</strong></td>
+                                                <td class="price-highlight">{{ flight.Price|intcomma }}đ</td>
+                                                <td>{{ flight.Start_Day }}</td>
+                                                <td><strong>{{ flight.Start_time }}</strong></td>
+                                                <td>{{ flight.take_place }}</td>
+                                                <td><strong>{{ flight.End_time }}</strong></td>
+                                                <td>{{ flight.destination }}</td>
+                                                <td><span class="rating-badge">{{ flight.flight_time }}</span></td>
+                                                <td>{{ flight.transit|default:"Bay thẳng" }}</td>
+                                                <td>{{ flight.total_time_hour }}</td>
+                                                <td>{{ flight.End_day }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'homepage' %}" class="back-link">
+                <span>⬅</span>
+                <span>Quay lại trang chủ</span>
+            </a>
+
+    <script>
+        function toggleCategory(categoryId) {
+            const content = document.getElementById(categoryId + '-content');
+            const header = content.previousElementSibling;
+            
+            content.classList.toggle('active');
+            header.classList.toggle('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstCategory = document.querySelector('.category-content');
+            const firstHeader = document.querySelector('.category-header');
+            
+            if (firstCategory && firstHeader) {
+                firstCategory.classList.add('active');
+                firstHeader.classList.add('active');
+            }
+        });
+    </script>
+</body>
+
+</html>
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Gợi ý du lịch thông minh</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h2>Chọn thành phố bạn muốn đi</h2>
+    <form method="post">
+        {% csrf_token %}
+        <select name="city" onchange="this.form.submit()">
+            <option value="">-- Chọn thành phố --</option>
+            {% for city in cities %}
+                <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if selected_city %}
+        <hr>
+        <h3>Chọn các dịch vụ bạn đã dùng để gợi ý tương tự:</h3>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="city" value="{{ selected_city }}">
+
+            <h4>Khách sạn:</h4>
+            {% if hotels %}
+                <ul>
+                    {% for hotel in hotels %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="hotels" value="{{ hotel.hotel_id }}">
+                                {{ hotel.hotel_name }}
+                            </label>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Không có khách sạn.</p>
+            {% endif %}
+
+            <h4>Tour:</h4>
+            {% if tours %}
+                <ul>
+                    {% for tour in tours %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="tours" value="{{ tour.tour_id }}">
+                                {{ tour.tour_name }}
+                            </label>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Không có tour.</p>
+            {% endif %}
+
+            <h4>Hãng bay:</h4>
+            {% if airlines %}
+                <ul>
+                    {% for airline in airlines %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="airlines" value="{{ airline }}">
+                                {{ airline }}
+                            </label>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Không có hãng bay.</p>
+            {% endif %}
+
+
+            <button type="submit">Gợi ý tương tự</button>
+        </form>
+
+        {% if hotel_recs or tour_recs or airline_recs %}
+            <hr>
+            <h3>Gợi ý dành cho bạn:</h3>
+
+            <h4>Khách sạn tương tự:</h4>
+            {% if hotel_recs %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên khách sạn</th>
+                            <th>Địa điểm</th>
+                            <th>Giá</th>
+                            <th>Đánh giá (Score)</th>
+                            <th>Số lượt đánh giá</th>
+                            <th>Thời gian dọn phòng</th>
+                            <th>Thời gian nhận phòng</th>
+                            <th>Thời gian trả phòng</th>
+                            <th>Cách trung tâm</th>
+                            <th>Địa điểm phổ biến</th>
+                            <th>Liên kết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hotel in hotel_recs %}
+                        <tr>
+                            <td>{{ hotel.hotel_name }}</td>
+                            <td>{{ hotel.location }}</td>
+                            <td>{{ hotel.price }}</td>
+                            <td>{{ hotel.score_hotels }}</td>
+                            <td>{{ hotel.number_rating }}</td>
+                            <td>{{ hotel.start_clean }}</td>
+                            <td>{{ hotel.received_time }}</td>
+                            <td>{{ hotel.giveback_time }}</td>
+                            <td>{{ hotel.from_center }}</td>
+                            <td>{{ hotel.popular_destination }}</td>
+                            <td><a href="{{ hotel.hotel_link }}" target="_blank">Link</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Không có gợi ý khách sạn.</p>
+            {% endif %}
+
+            <h4>Tour tương tự:</h4>
+            {% if tour_recs %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên tour</th>
+                            <th>Giá</th>
+                            <th>Đánh giá</th>
+                            <th>Thời lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tour in tour_recs %}
+                        <tr>
+                            <td>{{ tour.tour_name }}</td>
+                            <td>{{ tour.price }}</td>
+                            <td>{{ tour.rating }}</td>
+                            <td>{{ tour.duration }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Không có gợi ý tour.</p>
+            {% endif %}
+
+            <h4>Hãng bay tương tự:</h4>
+            {% if airline_recs %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên hãng bay</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for airline in airline_recs %}
+                        <tr>
+                            <td>{{ airline }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Không có gợi ý hãng bay.</p>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</body>
+</html> {% endcomment %}

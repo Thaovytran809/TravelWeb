@@ -1,0 +1,589 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám Phá Việt Nam - Du Lịch Tuyệt Vời</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #06244c 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-img {
+            width: 50px;  /* Điều chỉnh kích thước theo nhu cầu */
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+            border: 2px solid #ddd; /* Tùy chọn: thêm viền */
+        }
+
+        .logo-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cắt ảnh để vừa khít mà không bị méo */
+            object-position: center; /* Căn giữa ảnh */
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333; /* Điều chỉnh màu chữ theo thiết kế */
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #667eea, #06244c);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(45deg, #06244c, #667eea);
+        }
+
+        /* Main content */
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero-title {
+            font-size: 3.5em;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 300;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Slideshow */
+        .slideshow-container {
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .slide {
+            display: none;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            filter: brightness(0.8) contrast(1.1);
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 40px 30px 30px;
+            text-align: left;
+        }
+
+        .slide-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .slide-description {
+            font-size: 1.1em;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Navigation dots */
+        .dots-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .dot {
+            height: 15px;
+            width: 15px;
+            margin: 0 8px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: scale(1.2);
+        }
+
+        .dot:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Navigation arrows */
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .prev {
+            left: 20px;
+        }
+
+        .next {
+            right: 20px;
+        }
+
+        .prev:hover, .next:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Features section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .feature-link {
+    display: inline-block;
+    padding: 12px 24px;
+    background: white;
+    color: #667eea;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    border: 2px solid #667eea;
+}
+
+.feature-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: #667eea;
+    text-decoration: none;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+        .feature-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-title {
+                font-size: 2.5em;
+            }
+
+            .slide img {
+                height: 300px;
+            }
+
+            .slide-title {
+                font-size: 1.8em;
+            }
+
+            .prev, .next {
+                padding: 10px 15px;
+                font-size: 16px;
+            }
+        }
+
+        /* Fade animation */
+        .fade {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="{% url 'homepage' %}" class="logo">
+                <div class="logo-img">
+                    <img src="{% static 'images\Screenshot 2025-05-08 011418.png' %}" alt="Logo">
+                </div>
+                <div class="logo-text">Khám Phá Việt Nam</div>
+            </a>
+            <nav class="user-info">
+                <a href="{% url 'homepage' %}" class="user-link" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <div class="user-avatar" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden;">
+                    <img src="{{ user.profile.image.url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="user-name" style="color: black; font-weight: 600;">
+                    {{ user.get_full_name|default:user.username }}
+                    </div>
+                </a>
+                </nav>
+
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Khám Phá Vẻ Đẹp Việt Nam</h1>
+            <p class="hero-subtitle">Từ vịnh Hạ Long huyền thoại đến bãi biển Nha Trang thơ mộng</p>
+        </section>
+
+        <!-- Slideshow -->
+        <div class="slideshow-container">
+            <div class="slide fade active">
+                <img src="{% static 'images\halong-bay.jpg' %}" alt="Hạ Long Bay">
+                <div class="slide-overlay">
+                    <div class="slide-title">Vịnh Hạ Long</div>
+                    <div class="slide-description">Di sản thiên nhiên thế giới với hàng nghìn đảo đá vôi kỳ thú</div>
+                </div>
+            </div>
+            <div class="slide fade">
+                <img src="{% static 'images\KDI-libera-nha-trang-tong-quan3-1.jpg'%}" alt="Nha Trang Beach">
+                <div class="slide-overlay">
+                    <div class="slide-title">Nha Trang</div>
+                    <div class="slide-description">Thiên đường biển đảo với bãi cát trắng mịn và nước biển trong xanh</div>
+                </div>
+            </div>
+            <div class="slide fade">
+                <img src="{% static 'images\thanh-pho-da-lat.jpg'%}" alt="Da Lat City">
+                <div class="slide-overlay">
+                    <div class="slide-title">Đà Lạt</div>
+                    <div class="slide-description">Thành phố ngàn hoa với khí hậu mát mẻ quanh năm</div>
+                </div>
+            </div>
+            <div class="slide fade">
+                <img src="{% static 'images\thoi-tiet-phu-quoc-thang-5.jpg' %}" alt="Phu Quoc Island">
+                <div class="slide-overlay">
+                    <div class="slide-title">Phú Quốc</div>
+                    <div class="slide-description">Đảo ngọc với những bãi biển hoang sơ và hải sản tươi ngon</div>
+                </div>
+            </div>
+            
+            <!-- Navigation arrows -->
+            <button class="prev" onclick="changeSlide(-1)">❮</button>
+            <button class="next" onclick="changeSlide(1)">❯</button>
+        </div>
+
+        <!-- Dots navigation -->
+        <div class="dots-container">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+            <span class="dot" onclick="currentSlide(4)"></span>
+        </div>
+
+        <!-- Features -->
+        <section class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Dashboard Quản Lý</div>
+            <div class="feature-description">Theo dõi và phân tích dữ liệu du lịch với các biểu đồ trực quan và báo cáo chi tiết</div>
+            <a href="{% url 'dashboard' %}" class="feature-link">Xem Dashboard</a>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-title">Hành Trình Tiết Kiệm</div>
+            <div class="feature-description">Đề xuất các chuyến bay, khách sạn và tour du lịch phù hợp với yêu cầu của bạn</div>
+            <a href="{% url 'ai_recommend' %}" class="feature-link">Tìm Hành Trình</a>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">⭐</div>
+            <div class="feature-title">Gợi Ý Cá Nhân Hóa</div>
+            <div class="feature-description">Gợi ý dựa trên trải nghiệm và sở thích cá nhân từ những chuyến đi trước đó của bạn</div>
+            <a href="{% url 'travel_recommend' %}" class="feature-link">Nhận Gợi Ý</a>
+        </div>
+    </section>
+    </main>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.getElementsByClassName("slide");
+        const dots = document.getElementsByClassName("dot");
+        let slideInterval;
+
+        function showSlide(index) {
+            // Hide all slides
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active");
+                dots[i].classList.remove("active");
+            }
+            
+            // Show current slide
+            slides[index].classList.add("active");
+            dots[index].classList.add("active");
+        }
+
+        function nextSlide() {
+            slideIndex = (slideIndex + 1) % slides.length;
+            showSlide(slideIndex);
+        }
+
+        function changeSlide(direction) {
+            slideIndex += direction;
+            if (slideIndex >= slides.length) slideIndex = 0;
+            if (slideIndex < 0) slideIndex = slides.length - 1;
+            showSlide(slideIndex);
+            resetInterval();
+        }
+
+        function currentSlide(index) {
+            slideIndex = index - 1;
+            showSlide(slideIndex);
+            resetInterval();
+        }
+
+        function startSlideshow() {
+            slideInterval = setInterval(nextSlide, 4000);
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            startSlideshow();
+        }
+
+        // Initialize slideshow
+        document.addEventListener("DOMContentLoaded", function() {
+            showSlide(slideIndex);
+            startSlideshow();
+        });
+
+        // Pause slideshow on hover
+        const slideshowContainer = document.querySelector('.slideshow-container');
+        slideshowContainer.addEventListener('mouseenter', () => clearInterval(slideInterval));
+        slideshowContainer.addEventListener('mouseleave', startSlideshow);
+    </script>
+</body>
+</html>
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Homepage</title>
+    {% load static %}
+    <style>
+.slideshow-container {
+    position: relative;
+    max-width: 95%;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.slide {
+    display: none;
+}
+
+.slide img {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+}
+
+/* Optional fade animation */
+.fade {
+    animation-name: fade;
+    animation-duration: 1s;
+}
+
+@keyframes fade {
+    from {opacity: 0.4}
+    to {opacity: 1}
+}
+</style>
+
+</head>
+<body>
+    <div class="icon-buttons">
+        <a class="icon" href="{% url 'dashboard' %}">📊 Dashboard</a>
+        <a class="icon" href="{% url 'ai_recommend' %}">🤖 AI Gợi Ý</a>
+    </div>
+</br>
+
+    <div class="slideshow-container">
+    <div class="slide fade">
+        <img src="{% static 'images\halong-bay.jpg' %}" alt="Hạ Long" style="width:100%">
+    </div>
+    <div class="slide fade">
+        <img src="{% static 'images\KDI-libera-nha-trang-tong-quan3-1.jpg' %}" alt="Nha Trang" style="width:100%">
+    </div>
+    <div class="slide fade">
+        <img src="{% static 'images\thanh-pho-da-lat.jpg' %}" alt="Đà Lạt" style="width:100%">
+    </div>
+    <div class="slide fade">
+        <img src="{% static 'images\thoi-tiet-phu-quoc-thang-5.jpg' %}" alt="Phú Quốc" style="width:100%">
+    </div>
+</div>
+
+
+    
+</body>
+<script>
+let slideIndex = 0;
+
+function showSlides() {
+    const slides = document.getElementsByClassName("slide");
+
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+
+    slideIndex++;
+    if (slideIndex > slides.length) { slideIndex = 1 }
+
+    slides[slideIndex - 1].style.display = "block";
+    setTimeout(showSlides, 3000); // Thay đổi ảnh sau 3 giây
+}
+
+document.addEventListener("DOMContentLoaded", showSlides);
+</script>
+
+</html> {% endcomment %}

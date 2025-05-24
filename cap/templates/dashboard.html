@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body {
+            background: linear-gradient(45deg, #667eea, #06244c);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            margin: 0;
+            padding: 15px 20px;
+            min-height: 100vh;
+        }
+        
+        h2 {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-weight: 600;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .dashboard-wrapper {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+        
+        .tableauPlaceholder {
+            width: 100% !important;
+            height: 100vh !important;
+            overflow: hidden;
+        }
+        
+        .tableauViz {
+            width: 100% !important;
+            height: 100vh !important;
+        }
+    </style>
+</head>
+<body>
+    <h2>Dashboard hệ thống du lịch trên Traveloka</h2>
+    <a href="{% url 'homepage' %}" class="back-link">⬅ Quay lại trang chủ</a>
+    
+    <div class="dashboard-wrapper">
+        <div class='tableauPlaceholder' id='viz1747720676095' style='position: relative'><noscript><a href='#'><img alt='Hotel ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;ca&#47;cap_17466880590810&#47;Hotel&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />          <param name='embed_code_version' value='3' />          <param name='site_root' value='' />         <param name='name' value='cap_17466880590810&#47;Hotel' />         <param name='tabs' value='no' /><param name='toolbar' value='yes' />         <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;ca&#47;cap_17466880590810&#47;Hotel&#47;1.png' />          <param name='animate_transition' value='yes' />         <param name='display_static_image' value='yes' />         <param name='display_spinner' value='yes' />         <param name='display_overlay' value='yes' />         <param name='display_count' value='yes' />         <param name='language' value='en-US' /></object></div>                         <script type='text/javascript'>                                 var divElement = document.getElementById('viz1747720676095');                                 var vizElement = divElement.getElementsByTagName('object')[0];                                 if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1300px';vizElement.style.height='827px';}              else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1300px';vizElement.style.height='827px';}              else { vizElement.style.width='100%';vizElement.style.height='2727px';}                                  var scriptElement = document.createElement('script');                                 scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                                 vizElement.parentNode.insertBefore(scriptElement, vizElement);                         </script>
+    </div>
+</body>
+</html>
+{% comment %} 
+<!DOCTYPE html>
+<html>
+<head><title>Dashboard</title></head>
+<body>
+    <h2>Dashboard hệ thống du lịch trên</h2>
+    <a href="{% url 'homepage' %}" class="back-link">⬅ Quay lại trang chủ</a>
+    <div class='tableauPlaceholder' id='viz1747720676095' style='position: relative'><noscript><a href='#'><img alt='Hotel ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;ca&#47;cap_17466880590810&#47;Hotel&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+        <param name='embed_code_version' value='3' /> 
+        <param name='site_root' value='' />
+        <param name='name' value='cap_17466880590810&#47;Hotel' />
+        <param name='tabs' value='no' /><param name='toolbar' value='yes' />
+        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;ca&#47;cap_17466880590810&#47;Hotel&#47;1.png' /> 
+        <param name='animate_transition' value='yes' />
+        <param name='display_static_image' value='yes' />
+        <param name='display_spinner' value='yes' />
+        <param name='display_overlay' value='yes' />
+        <param name='display_count' value='yes' />
+        <param name='language' value='en-US' /></object></div>                
+        <script type='text/javascript'>                    
+            var divElement = document.getElementById('viz1747720676095');                    
+            var vizElement = divElement.getElementsByTagName('object')[0];                    
+            if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1300px';vizElement.style.height='827px';} 
+            else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1300px';vizElement.style.height='827px';} 
+            else { vizElement.style.width='100%';vizElement.style.height='2727px';}                     
+            var scriptElement = document.createElement('script');                    
+            scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
+            vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+        </script>
+</body>
+</html>  {% endcomment %}
