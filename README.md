@@ -1,4 +1,4 @@
-Link to Dashboard: 
+Link to Dashboard: https://public.tableau.com/app/profile/tran.thi.thao.vy/viz/cap_17466880590810/Hotel
 Link to see video demo about the project: https://drive.google.com/file/d/1RqF8kUhP3eNEq9zOOSAm-TFAxx6yo3lk/view?usp=sharing
 - Tổng quan về trang web:
 <img width="740" height="501" alt="image" src="https://github.com/user-attachments/assets/b47428dd-cefc-4cbf-b186-10e18fc206fe" />
